@@ -1,0 +1,63 @@
+{
+  "name": "react-gl-renderer",
+  "version": "1.0.1",
+  "description": "A custom React renderer using WebGL to render UI components with CSS-style styling",
+  "main": "./dist/index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./platform.web.js": {
+      "import": "./dist/platform.web.js",
+      "types": "./dist/platform.web.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "index.d.ts",
+    "platform.web.d.ts"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist --copy-files",
+    "serve": "cd example && webpack serve --open"
+  },
+  "keywords": [
+    "react",
+    "renderer",
+    "webgl",
+    "sdf",
+    "yoga-layout",
+    "flexbox"
+  ],
+  "author": "zycwind",
+  "homepage": "https://github.com/zycwind/react-gl-renderer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zycwind/react-gl-renderer.git"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-reconciler": "^0.28.0",
+    "three": "^0.164.1"
+  },
+  "dependencies": {
+    "yoga-layout": "^3.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.28.6",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-react": "^7.28.5",
+    "@types/react": "^18.3.28",
+    "@types/three": "^0.164.1",
+    "babel-loader": "^10.1.1",
+    "copy-webpack-plugin": "^14.0.0",
+    "html-webpack-plugin": "^5.6.6",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.2"
+  }
+}
