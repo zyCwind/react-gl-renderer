@@ -5,6 +5,7 @@ import ReactReconciler from 'react-reconciler';
 import { deleteImageData } from './assets.js';
 import { createEvents } from './events.js';
 import { Node, TextNode } from './node.js';
+import { platform } from './platform.js';
 import { createRenderCommands } from './renderer.js';
 
 // 影响测量的文字属性，需要调用 yogaNode.markDirty()
@@ -631,6 +632,7 @@ export function createRoot(renderer) {
     };
 
     const { handlePointer } = createEvents(container);
+    platform.default.bindEvents(handlePointer);
 
     const fiberRoot = reconciler.createContainer(
         container,
@@ -646,7 +648,6 @@ export function createRoot(renderer) {
     return {
         render(element) {
             reconciler.updateContainer(element, fiberRoot, null, null);
-        },
-        handlePointer
+        }
     };
 }

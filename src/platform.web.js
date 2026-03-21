@@ -3,6 +3,49 @@
 
 import { platform } from './platform.js';
 
+let isMultiple = false;
+const textarea = document.createElement('textarea');
+textarea.id = 'keyboard';
+textarea.style.cssText = 'position: absolute; z-index: -1; opacity: 0;';
+// input 事件
+textarea.addEventListener('input', (e) => {
+    currentOnInput?.(e.target.value);
+});
+
+// keydown 事件：单行时 enter 阻止换行
+textarea.addEventListener('keydown', (e) => {
+    if (!isMultiple && e.key === 'Enter') {
+        e.preventDefault();
+    }
+});
+
+export const canvas = document.createElement('canvas');
+canvas.width = 550;
+canvas.height = 400;
+
+// 创建一个包含 textarea 和 canvas 的容器结构，并添加到 div#root 中
+const rootContainer = document.getElementById('root');
+
+const container = document.createElement('div');
+container.style.position = 'relative';
+
+container.appendChild(textarea);
+container.appendChild(canvas);
+rootContainer.appendChild(container);
+
+function bindEvents(handlePointer) {
+    // 初始化事件系统
+    canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); // 阻止默认行为，防止 canvas 获得焦点
+
+        canvas.setPointerCapture(e.pointerId);
+        handlePointer('onPointerDown')(e);
+    });
+    canvas.addEventListener('pointermove', handlePointer('onPointerMove'));
+    canvas.addEventListener('pointerup', handlePointer('onPointerUp'));
+    canvas.addEventListener('pointercancel', handlePointer('onPointerCancel'));
+}
+
 /**
  * 从图片 URL 加载图片
  * @param {string} src - 图片 URL
@@ -20,8 +63,8 @@ function createImage(src) {
 }
 
 // 单例 canvas，用于图片像素提取
-const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d', {
+const offscreenCanvas = document.createElement('canvas');
+const ctx = offscreenCanvas.getContext('2d', {
     willReadFrequently: true
 });
 
@@ -70,8 +113,8 @@ async function createTextImage(measureResult, style) {
     const canvasHeight = Math.max(1, height);
 
     // 设置 canvas 尺寸
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    offscreenCanvas.width = canvasWidth;
+    offscreenCanvas.height = canvasHeight;
 
     // 清空 canvas
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -103,51 +146,6 @@ async function createTextImage(measureResult, style) {
 // 当前回调
 let currentOnInput = null;
 let currentOnBlur = null;
-let isMultiple = false;
-let textarea = null;
-
-let mainCanvas = null;
-
-/**
- * 创建 canvas 元素和隐藏的 textarea 键盘输入元素
- * 创建一个包含 textarea 和 canvas 的容器结构，并添加到 div#root 中
- * @returns {HTMLCanvasElement} 返回创建的 canvas 元素
- */
-export function createCanvas() {
-    if (mainCanvas) {
-        return mainCanvas;
-    }
-
-    const rootContainer = document.getElementById('root');
-
-    const container = document.createElement('div');
-    container.style.position = 'relative';
-
-    textarea = document.createElement('textarea');
-    textarea.id = 'keyboard';
-    textarea.style.cssText = 'position: absolute; z-index: -1; opacity: 0;';
-    // input 事件
-    textarea.addEventListener('input', (e) => {
-        currentOnInput?.(e.target.value);
-    });
-
-    // keydown 事件：单行时 enter 阻止换行
-    textarea.addEventListener('keydown', (e) => {
-        if (!isMultiple && e.key === 'Enter') {
-            e.preventDefault();
-        }
-    });
-
-    mainCanvas = document.createElement('canvas');
-    mainCanvas.width = 550;
-    mainCanvas.height = 400;
-
-    container.appendChild(textarea);
-    container.appendChild(mainCanvas);
-    rootContainer.appendChild(container);
-
-    return mainCanvas;
-}
 
 /**
  * 显示键盘
@@ -197,6 +195,7 @@ function hideKeyboard() {
 }
 
 platform.default = {
+    bindEvents,
     createImage,
     createTextImage,
     hideKeyboard,

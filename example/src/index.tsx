@@ -3,7 +3,7 @@
 
 import { StrictMode, useRef, useState } from 'react';
 import { createRoot, GLRenderer3D, PointerEvent, Text, TextInput, View } from 'react-gl-renderer';
-import { createCanvas } from 'react-gl-renderer/platform.web.js';
+import { canvas } from 'react-gl-renderer/platform.web.js';
 import { BoxGeometry, DoubleSide, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
 
@@ -124,8 +124,6 @@ function UserInput() {
     );
 }
 
-const canvas = createCanvas();
-
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
 
@@ -165,23 +163,7 @@ function animate() {
 
 animate();
 
-const {
-    render,
-    handlePointer
-} = createRoot(reactRenderer);
-
-// 初始化事件系统
-canvas.addEventListener('pointerdown', (e) => {
-    e.preventDefault(); // 阻止默认行为，防止 canvas 获得焦点
-
-    canvas.setPointerCapture(e.pointerId);
-    handlePointer('onPointerDown')(e);
-});
-canvas.addEventListener('pointermove', handlePointer('onPointerMove'));
-canvas.addEventListener('pointerup', handlePointer('onPointerUp'));
-canvas.addEventListener('pointercancel', handlePointer('onPointerCancel'));
-
-render(
+createRoot(reactRenderer).render(
     <StrictMode>
         <View
             style={{

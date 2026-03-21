@@ -24,7 +24,28 @@ import {
 } from './renderer.js';
 
 // 共享材质实例
-let material = null;
+const material = new RawShaderMaterial({
+    vertexShader: vertexShaderSource,
+    fragmentShader: fragmentShaderSource,
+    uniforms: {
+        u_clipCount: { value: 0 },
+        u_clipTexture: { value: null },
+        u_clipTextureSize: { value: new Vector2(1, 1) },
+        u_image9Patch: { value: [0, 0, 0, 0] },
+        u_imageRepeat: { value: new Vector2(0, 0) },
+        u_imageSize: { value: new Vector2(1, 1) },
+        u_imageSizeRatio: { value: new Vector2(1, 1) },
+        u_imageTexture: { value: null },
+        u_maxVal: { value: 1 },
+        u_projection: { value: new Matrix3() },
+        u_use9Patch: { value: false },
+        u_useImageSizeRatio: { value: false },
+        u_useImageTexture: { value: false }
+    },
+    transparent: true,
+    side: DoubleSide,
+    depthWrite: false
+});
 
 // 创建裁剪纹理
 // clipChain 存储 { paddingBoxRegion, aabbs }，直接使用 paddingBoxRegion
@@ -112,31 +133,6 @@ class UI extends Mesh {
 
     constructor(options) {
         const geometry = new BufferGeometry();
-        if (!material) {
-            material = new RawShaderMaterial({
-                vertexShader: vertexShaderSource,
-                fragmentShader: fragmentShaderSource,
-                uniforms: {
-                    u_clipCount: { value: 0 },
-                    u_clipTexture: { value: null },
-                    u_clipTextureSize: { value: new Vector2(1, 1) },
-                    u_image9Patch: { value: [0, 0, 0, 0] },
-                    u_imageRepeat: { value: new Vector2(0, 0) },
-                    u_imageSize: { value: new Vector2(1, 1) },
-                    u_imageSizeRatio: { value: new Vector2(1, 1) },
-                    u_imageTexture: { value: null },
-                    u_maxVal: { value: 1 },
-                    u_projection: { value: new Matrix3() },
-                    u_use9Patch: { value: false },
-                    u_useImageSizeRatio: { value: false },
-                    u_useImageTexture: { value: false }
-                },
-                transparent: true,
-                side: DoubleSide,
-                depthWrite: false
-            });
-        }
-
         super(geometry, material);
 
         this.frustumCulled = false;  // 禁用视锥体剔除

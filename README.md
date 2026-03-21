@@ -29,21 +29,12 @@ npm install react-gl-renderer
 
 ```tsx
 import { StrictMode } from 'react';
-import { createRoot, GLRenderer, View, Text, TextInput } from 'react-gl-renderer';
-import { createCanvas } from 'react-gl-renderer/platform.web.js';
+import { createRoot, GLRenderer, View, Text } from 'react-gl-renderer';
+import { canvas } from 'react-gl-renderer/platform.web.js';
 
-const canvas = createCanvas();
-const renderer = new GLRenderer(canvas);
+const reactRenderer = new GLRenderer(canvas);
 
-const { render, handlePointer } = createRoot(renderer);
-
-// 初始化事件系统
-canvas.addEventListener('pointerdown', handlePointer('onPointerDown'));
-canvas.addEventListener('pointermove', handlePointer('onPointerMove'));
-canvas.addEventListener('pointerup', handlePointer('onPointerUp'));
-canvas.addEventListener('pointercancel', handlePointer('onPointerCancel'));
-
-render(
+createRoot(reactRenderer).render(
   <StrictMode>
     <View
       style={{
@@ -78,15 +69,44 @@ render(
 ## 与 Three.js 集成
 
 ```tsx
-import { createRoot, GLRenderer3D } from 'react-gl-renderer';
-import { createCanvas } from 'react-gl-renderer/platform.web.js';
+import { StrictMode } from 'react';
+import { createRoot, GLRenderer3D, View, Text } from 'react-gl-renderer';
+import { canvas } from 'react-gl-renderer/platform.web.js';
 import { WebGLRenderer } from 'three';
 
-const canvas = createCanvas();
-const threeRenderer = new WebGLRenderer({ canvas });
-const reactRenderer = new GLRenderer3D(threeRenderer);
+const renderer = new WebGLRenderer({ canvas });
+const reactRenderer = new GLRenderer3D(renderer);
 
-const { render, handlePointer } = createRoot(reactRenderer);
+createRoot(reactRenderer).render(
+  <StrictMode>
+    <View
+      style={{
+        flexDirection: 'column',
+        padding: 20
+      }}
+    >
+      <View
+        style={{
+          width: 100,
+          height: 100,
+          backgroundColor: [1, 0, 0, 1],
+          borderTopLeftRadius: [10, 10],
+          borderTopRightRadius: [10, 10],
+          borderBottomRightRadius: [10, 10],
+          borderBottomLeftRadius: [10, 10],
+          borderTopWidth: 2,
+          borderRightWidth: 2,
+          borderBottomWidth: 2,
+          borderLeftWidth: 2,
+          borderColor: [0.5, 0, 0, 1]
+        }}
+      />
+      <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
+        Hello World
+      </Text>
+    </View>
+  </StrictMode>
+);
 
 // 渲染结果存储在 reactRenderer.renderTarget 中
 // 可用于后处理或作为纹理贴到 3D 物体上
