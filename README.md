@@ -36,28 +36,7 @@ const reactRenderer = new GLRenderer(canvas);
 
 createRoot(reactRenderer).render(
   <StrictMode>
-    <View
-      style={{
-        flexDirection: 'column',
-        padding: 20
-      }}
-    >
-      <View
-        style={{
-          width: 100,
-          height: 100,
-          backgroundColor: [1, 0, 0, 1],
-          borderTopLeftRadius: [10, 10],
-          borderTopRightRadius: [10, 10],
-          borderBottomRightRadius: [10, 10],
-          borderBottomLeftRadius: [10, 10],
-          borderTopWidth: 2,
-          borderRightWidth: 2,
-          borderBottomWidth: 2,
-          borderLeftWidth: 2,
-          borderColor: [0.5, 0, 0, 1]
-        }}
-      />
+    <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
       <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
         Hello World
       </Text>
@@ -79,28 +58,7 @@ const reactRenderer = new GLRenderer3D(renderer);
 
 createRoot(reactRenderer).render(
   <StrictMode>
-    <View
-      style={{
-        flexDirection: 'column',
-        padding: 20
-      }}
-    >
-      <View
-        style={{
-          width: 100,
-          height: 100,
-          backgroundColor: [1, 0, 0, 1],
-          borderTopLeftRadius: [10, 10],
-          borderTopRightRadius: [10, 10],
-          borderBottomRightRadius: [10, 10],
-          borderBottomLeftRadius: [10, 10],
-          borderTopWidth: 2,
-          borderRightWidth: 2,
-          borderBottomWidth: 2,
-          borderLeftWidth: 2,
-          borderColor: [0.5, 0, 0, 1]
-        }}
-      />
+    <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
       <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
         Hello World
       </Text>
@@ -110,6 +68,28 @@ createRoot(reactRenderer).render(
 
 // 渲染结果存储在 reactRenderer.renderTarget 中
 // 可用于后处理或作为纹理贴到 3D 物体上
+```
+
+## 抖音小游戏平台
+
+渲染器支持抖音小游戏环境，使用方式与 Web 平台类似，只需导入不同的平台模块：
+
+```tsx
+import { StrictMode } from 'react';
+import { createRoot, GLRenderer, View, Text } from 'react-gl-renderer';
+import { canvas } from 'react-gl-renderer/platform.microgame.douyin.js';
+
+const reactRenderer = new GLRenderer(canvas);
+
+createRoot(reactRenderer).render(
+  <StrictMode>
+    <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
+      <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
+        Hello World
+      </Text>
+    </View>
+  </StrictMode>
+);
 ```
 
 ## 核心组件
@@ -257,30 +237,18 @@ function AnimatedComponent() {
 
 react-gl-renderer 的架构设计为未来的扩展提供了坚实的基础：
 
-### 基于 Node 的窗口环境
-
-渲染器基于标准 WebGL 接口实现，架构上不依赖浏览器环境特有的 API。未来可扩展运行在 GLFW 下，实现原生桌面窗口应用。当前已实现完整的布局引擎和事件系统，可以轻松扩展为多窗口环境。
-
 ### 全平台支持
 
 由于底层使用标准 GL 接口，理论上可以在任何支持 OpenGL 的平台上运行：
 
 - **Web 浏览器** - 当前首先支持的平台，通过 WebGL
-- **Node 桌面应用** - 通过 node-gl、GLFW 实现原生窗口
+- **Node 桌面应用** - 通过 node-3d 实现原生窗口
 - **小游戏环境** - 轻量级渲染管线，无 DOM 依赖，可与游戏渲染循环集成
 - **移动端** - 通过 OpenGL ES
 
-### 小游戏环境适配
-
-渲染器的设计非常适合小游戏环境：
-- 轻量级的渲染管线
-- 无 DOM 依赖
-- 可与现有的游戏渲染循环集成
-- 支持离屏渲染，便于与游戏场景融合
-
 ### React 全量放进 Worker
 
-渲染器与 React 完全解耦，React 产生的渲染对象是可序列化的。这意味着可以将 React 运行时完全放进 Worker，主线程只负责接收渲染对象并执行 GL 绑定。
+渲染器与 React 完全解耦，React 产生的渲染对象是可序列化的。这意味着可以将 React 运行时完全放进 Worker，主线程只负责接收渲染对象并进行渲染。
 
 ## License
 

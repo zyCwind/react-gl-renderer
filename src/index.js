@@ -1,5 +1,8 @@
-// Copyright (c) 2026 391321232@qq.com
-// Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
+/**
+ * @license react-gl-renderer
+ * Copyright (c) 2026 391321232@qq.com
+ * Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
+ */
 
 export { Text, TextInput, View } from './core.js';
 export { useFrame } from './loop.js';

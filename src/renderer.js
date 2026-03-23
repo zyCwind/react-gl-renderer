@@ -1,5 +1,8 @@
-// Copyright (c) 2026 391321232@qq.com
-// Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
+/**
+ * @license react-gl-renderer
+ * Copyright (c) 2026 391321232@qq.com
+ * Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
+ */
 
 import { getImageData } from './assets.js';
 
@@ -729,7 +732,7 @@ export class GLRenderer {
             // 9-patch 模式
             gl.uniform1i(this.uniformLocs.use9Patch, background9Patch ? 1 : 0);
             if (background9Patch) {
-                // backgroundSize 作为贴图缩放倍数
+                // background9PatchSize 作为贴图缩放倍数
                 const [scaleX, scaleY] = background9PatchSize ?? [1, 1];
 
                 gl.uniform2f(this.uniformLocs.imageSize, imageData.width * scaleX, imageData.height * scaleY);

@@ -5,6 +5,6 @@
  */
 
 /**
- * Web 平台实现
+ * 抖音小游戏平台实现
  */
 export const canvas: HTMLCanvasElement;

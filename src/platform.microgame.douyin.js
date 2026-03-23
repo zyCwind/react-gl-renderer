@@ -6,70 +6,85 @@
 
 import { platform } from './platform.js';
 
-let isMultiple = false;
-const textarea = document.createElement('textarea');
-textarea.id = 'keyboard';
-textarea.style.cssText = 'position: absolute; z-index: -1; opacity: 0;';
-// input 事件
-textarea.addEventListener('input', (e) => {
-    currentOnInput?.(e.target.value);
+// 全局 canvas（抖音小游戏会自动创建，无需设置尺寸）
+export const canvas = tt.createCanvas();
+
+// 离屏 canvas，用于文字测量和绘制
+const offscreenCanvas = tt.createCanvas();
+const ctx = offscreenCanvas.getContext('2d', {
+    willReadFrequently: true
 });
 
-// keydown 事件：单行时 enter 阻止换行
-textarea.addEventListener('keydown', (e) => {
-    if (!isMultiple && e.key === 'Enter') {
-        e.preventDefault();
-    }
-});
+// 键盘状态
+let currentOnInput = null;
+let currentOnBlur = null;
 
-export const canvas = document.createElement('canvas');
-canvas.width = 550;
-canvas.height = 400;
-
-// 创建一个包含 textarea 和 canvas 的容器结构，并添加到 div#root 中
-const rootContainer = document.getElementById('root');
-
-const container = document.createElement('div');
-container.style.position = 'relative';
-
-container.appendChild(textarea);
-container.appendChild(canvas);
-rootContainer.appendChild(container);
-
+/**
+ * 绑定触摸事件
+ * @param {Function} handlePointer - 事件处理函数
+ */
 function bindEvents(handlePointer) {
-    // 初始化事件系统
-    canvas.addEventListener('pointerdown', (e) => {
-        e.preventDefault(); // 阻止默认行为，防止 canvas 获得焦点
-
-        canvas.setPointerCapture(e.pointerId);
-        handlePointer('onPointerDown')(e);
+    // 抖音小游戏使用 touch 事件，需要转换为 pointer 事件格式
+    tt.onTouchStart((e) => {
+        const touch = e.touches[0];
+        handlePointer('onPointerDown')({
+            pointerId: touch.identifier,
+            offsetX: touch.clientX,
+            offsetY: touch.clientY
+        });
     });
-    canvas.addEventListener('pointermove', handlePointer('onPointerMove'));
-    canvas.addEventListener('pointerup', handlePointer('onPointerUp'));
-    canvas.addEventListener('pointercancel', handlePointer('onPointerCancel'));
+
+    tt.onTouchMove((e) => {
+        const touch = e.touches[0];
+        handlePointer('onPointerMove')({
+            pointerId: touch.identifier,
+            offsetX: touch.clientX,
+            offsetY: touch.clientY
+        });
+    });
+
+    tt.onTouchEnd((e) => {
+        const touch = e.changedTouches[0];
+        handlePointer('onPointerUp')({
+            pointerId: touch.identifier,
+            offsetX: touch.clientX,
+            offsetY: touch.clientY
+        });
+    });
+
+    tt.onTouchCancel((e) => {
+        const touch = e.changedTouches[0];
+        handlePointer('onPointerCancel')({
+            pointerId: touch.identifier,
+            offsetX: touch.clientX,
+            offsetY: touch.clientY
+        });
+    });
+
+    tt.onKeyboardConfirm((res) => {
+        if (currentOnInput) {
+            currentOnInput(res.value);
+        }
+    });
 }
 
 /**
  * 从图片 URL 加载图片
  * @param {string} src - 图片 URL
- * @returns {Promise<HTMLImageElement>} 返回加载完成的图片元素
+ * @returns {Promise<{ width: number, height: number, src: string }>} 返回加载完成的图片对象
  */
 function createImage(src) {
     return new Promise((resolve, reject) => {
-        const img = new Image();
+        const img = tt.createImage();
         img.onload = () => {
             resolve(img);
         };
-        img.onerror = reject;
+        img.onerror = (err) => {
+            reject(err);
+        };
         img.src = src;
     });
 }
-
-// 单例 canvas，用于图片像素提取
-const offscreenCanvas = document.createElement('canvas');
-const ctx = offscreenCanvas.getContext('2d', {
-    willReadFrequently: true
-});
 
 /**
  * 测量文字尺寸（底层方法，仅测量单行文本宽度）
@@ -146,10 +161,6 @@ async function createTextImage(measureResult, style) {
     };
 }
 
-// 当前回调
-let currentOnInput = null;
-let currentOnBlur = null;
-
 /**
  * 显示键盘
  * @param {Object} options
@@ -173,28 +184,28 @@ function showKeyboard(options = {}) {
         currentOnBlur();
     }
 
-    isMultiple = multiple;
-
-    if (maxLength) {
-        textarea.maxLength = maxLength;
-    }
-    textarea.value = defaultValue;
     currentOnInput = onInput;
     currentOnBlur = onBlur;
-    textarea.focus();
+
+    tt.showKeyboard({
+        defaultValue,
+        maxLength,
+        multiple,
+        confirmHold: false,
+        confirmType: 'done'
+    });
 }
 
 /**
  * 隐藏键盘
  */
 function hideKeyboard() {
-    textarea.blur();
-    currentOnInput = null;
+    tt.hideKeyboard();
     if (currentOnBlur) {
         currentOnBlur();
     }
+    currentOnInput = null;
     currentOnBlur = null;
-    isMultiple = false;
 }
 
 platform.default = {

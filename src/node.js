@@ -1,5 +1,8 @@
-// Copyright (c) 2026 391321232@qq.com
-// Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
+/**
+ * @license react-gl-renderer
+ * Copyright (c) 2026 391321232@qq.com
+ * Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
+ */
 
 import Yoga from 'yoga-layout';
 import { measureText } from './text.js';
