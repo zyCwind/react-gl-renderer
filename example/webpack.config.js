@@ -6,6 +6,7 @@ module.exports = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     entry: './src/index.tsx',
     output: {
+        publicPath: '/',
         path: path.resolve(__dirname, 'dist'),
     },
     devServer: {
@@ -29,7 +30,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
+                test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif|wasm)$/i,
                 type: 'asset',
             },
             {
@@ -42,4 +43,7 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
+    // optimization: {
+    //     minimize: false,
+    // },
 };

@@ -36,29 +36,28 @@ function hitTest(root, x, y) {
 }
 
 export function createEvents(container) {
-    // pointerId -> Fiber 映射，用于 pointer capture
+    // identifier -> Fiber 映射，用于 pointer capture
     const pointerCaptureMap = {};
 
-    function createEvent(nativeEvent, target) {
+    function createEvent(touch, target) {
         return {
-            nativeEvent,
-            offsetX: nativeEvent.offsetX,
-            offsetY: nativeEvent.offsetY,
-            pointerId: nativeEvent.pointerId,
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            identifier: touch.identifier,
             target,
             currentTarget: null,
             isPropagationStopped: false,
             stopPropagation() { this.isPropagationStopped = true; },
-            setPointerCapture(pointerId) {
-                pointerCaptureMap[pointerId] = this.currentTarget;
+            setPointerCapture(identifier) {
+                pointerCaptureMap[identifier] = this.currentTarget;
             },
-            releasePointerCapture(pointerId) {
-                delete pointerCaptureMap[pointerId];
+            releasePointerCapture(identifier) {
+                delete pointerCaptureMap[identifier];
             }
         };
     }
 
-    function dispatchEvent(target, eventName, nativeEvent) {
+    function dispatchEvent(target, eventName, touch) {
         if (!target) {
             return;
         }
@@ -71,7 +70,7 @@ export function createEvents(container) {
             }
         }
 
-        const event = createEvent(nativeEvent, target);
+        const event = createEvent(touch, target);
 
         // capture phase: 根 -> 目标
         for (let i = path.length - 1; i >= 0 && !event.isPropagationStopped; i--) {
@@ -93,18 +92,20 @@ export function createEvents(container) {
                 return;
             }
 
-            const { pointerId, offsetX, offsetY } = nativeEvent;
+            const { changedTouches } = nativeEvent;
+            for (let i = 0; i < changedTouches.length; i++) {
+                const { identifier, clientX, clientY } = changedTouches[i];
+                // 检查是否被 capture，被 capture 则跳过 hitTest
+                const target = pointerCaptureMap[identifier] ?? hitTest(rootNode, clientX, clientY);
 
-            // 检查是否被 capture，被 capture 则跳过 hitTest
-            const target = pointerCaptureMap[pointerId] ?? hitTest(rootNode, offsetX, offsetY);
+                if (target) {
+                    dispatchEvent(target, name, changedTouches[i]);
+                }
 
-            if (target) {
-                dispatchEvent(target, name, nativeEvent);
-            }
-
-            // 模拟浏览器隐式释放：pointerup 和 pointercancel 后自动释放 capture
-            if (name === 'onPointerUp' || name === 'onPointerCancel') {
-                delete pointerCaptureMap[pointerId];
+                // 模拟浏览器隐式释放：pointerup 和 pointercancel 后自动释放 capture
+                if (name === 'onPointerUp' || name === 'onPointerCancel') {
+                    delete pointerCaptureMap[identifier];
+                }
             }
         };
     }

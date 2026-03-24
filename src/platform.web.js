@@ -4,49 +4,111 @@
  * Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
  */
 
+import { loadYoga } from 'yoga-layout/load';
 import { platform } from './platform.js';
 
-let isMultiple = false;
-const textarea = document.createElement('textarea');
-textarea.id = 'keyboard';
-textarea.style.cssText = 'position: absolute; z-index: -1; opacity: 0;';
-// input 事件
-textarea.addEventListener('input', (e) => {
-    currentOnInput?.(e.target.value);
+// 插入 HTML 模板到 root 容器
+document.getElementById('root').insertAdjacentHTML('beforeend', `<div style="position: relative; width: 550px;">
+    <canvas id="main" width="550" height="400"></canvas>
+    <div id="overlay" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; display: none; align-items: center; justify-content: center;">
+        <div style="display: flex; flex-direction: column; width: 200px; border: #000 solid 1px; background-color: #fff;">
+            <textarea id="text" style="border: 0; height: 80px;"></textarea>
+            <div style="display: flex; flex-direction: row; text-align: center; border-top: #000 solid 1px;">
+                <div id="cancel" style="padding: 5px; flex: 1; cursor: pointer;">取消</div>
+                <div id="ok" style="padding: 5px; flex: 1; border-left: #000 solid 1px; cursor: pointer;">确定</div>
+            </div>
+        </div>
+    </div>
+</div>`);
+
+export const canvas = document.getElementById('main');
+
+// 单例 canvas，用于图片像素提取
+const offscreenCanvas = document.createElement('canvas');
+const ctx = offscreenCanvas.getContext('2d', {
+    willReadFrequently: true
 });
 
-// keydown 事件：单行时 enter 阻止换行
-textarea.addEventListener('keydown', (e) => {
+// 键盘状态
+let currentOnInput = null;
+let currentOnBlur = null;
+
+let isMultiple = false;
+
+// textarea keydown 事件：单行时 enter 阻止换行
+document.getElementById('text').addEventListener('keydown', (e) => {
     if (!isMultiple && e.key === 'Enter') {
         e.preventDefault();
     }
 });
+document.getElementById('cancel').addEventListener('click', () => {
+    document.getElementById('overlay').style.display = 'none';
+});
+document.getElementById('ok').addEventListener('click', () => {
+    if (currentOnInput) {
+        currentOnInput(document.getElementById('text').value);
+    }
+    document.getElementById('overlay').style.display = 'none';
+});
 
-export const canvas = document.createElement('canvas');
-canvas.width = 550;
-canvas.height = 400;
 
-// 创建一个包含 textarea 和 canvas 的容器结构，并添加到 div#root 中
-const rootContainer = document.getElementById('root');
-
-const container = document.createElement('div');
-container.style.position = 'relative';
-
-container.appendChild(textarea);
-container.appendChild(canvas);
-rootContainer.appendChild(container);
-
+/**
+ * 绑定触摸事件
+ * @param {Function} handlePointer - 事件处理函数
+ */
 function bindEvents(handlePointer) {
     // 初始化事件系统
+    const handlePointerDown = handlePointer('onPointerDown');
+    const handlePointerMove = handlePointer('onPointerMove');
+    const handlePointerUp = handlePointer('onPointerUp');
+    const handlePointerCancel = handlePointer('onPointerCancel');
     canvas.addEventListener('pointerdown', (e) => {
         e.preventDefault(); // 阻止默认行为，防止 canvas 获得焦点
 
         canvas.setPointerCapture(e.pointerId);
-        handlePointer('onPointerDown')(e);
+        handlePointerDown({
+            changedTouches: [
+                {
+                    identifier: e.pointerId,
+                    clientX: e.offsetX,
+                    clientY: e.offsetY
+                }
+            ]
+        });
     });
-    canvas.addEventListener('pointermove', handlePointer('onPointerMove'));
-    canvas.addEventListener('pointerup', handlePointer('onPointerUp'));
-    canvas.addEventListener('pointercancel', handlePointer('onPointerCancel'));
+    canvas.addEventListener('pointermove', (e) => {
+        handlePointerMove({
+            changedTouches: [
+                {
+                    identifier: e.pointerId,
+                    clientX: e.offsetX,
+                    clientY: e.offsetY
+                }
+            ]
+        });
+    });
+    canvas.addEventListener('pointerup', (e) => {
+        handlePointerUp({
+            changedTouches: [
+                {
+                    identifier: e.pointerId,
+                    clientX: e.offsetX,
+                    clientY: e.offsetY
+                }
+            ]
+        });
+    });
+    canvas.addEventListener('pointercancel', (e) => {
+        handlePointerCancel({
+            changedTouches: [
+                {
+                    identifier: e.pointerId,
+                    clientX: e.offsetX,
+                    clientY: e.offsetY
+                }
+            ]
+        });
+    });
 }
 
 /**
@@ -64,12 +126,6 @@ function createImage(src) {
         img.src = src;
     });
 }
-
-// 单例 canvas，用于图片像素提取
-const offscreenCanvas = document.createElement('canvas');
-const ctx = offscreenCanvas.getContext('2d', {
-    willReadFrequently: true
-});
 
 /**
  * 测量文字尺寸（底层方法，仅测量单行文本宽度）
@@ -146,10 +202,6 @@ async function createTextImage(measureResult, style) {
     };
 }
 
-// 当前回调
-let currentOnInput = null;
-let currentOnBlur = null;
-
 /**
  * 显示键盘
  * @param {Object} options
@@ -174,27 +226,26 @@ function showKeyboard(options = {}) {
     }
 
     isMultiple = multiple;
-
-    if (maxLength) {
-        textarea.maxLength = maxLength;
-    }
-    textarea.value = defaultValue;
     currentOnInput = onInput;
     currentOnBlur = onBlur;
-    textarea.focus();
+
+    document.getElementById('overlay').style.display = 'flex';
+    const text = document.getElementById('text');
+    if (maxLength) {
+        text.maxLength = maxLength;
+    }
+    text.value = defaultValue;
 }
 
 /**
  * 隐藏键盘
  */
 function hideKeyboard() {
-    textarea.blur();
     currentOnInput = null;
     if (currentOnBlur) {
         currentOnBlur();
+        currentOnBlur = null;
     }
-    currentOnBlur = null;
-    isMultiple = false;
 }
 
 platform.default = {
@@ -202,6 +253,7 @@ platform.default = {
     createImage,
     createTextImage,
     hideKeyboard,
+    loadYoga,
     measureText,
     showKeyboard
 };

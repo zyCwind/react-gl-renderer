@@ -7,11 +7,11 @@
 import { loadYoga } from 'yoga-layout/load';
 import { platform } from './platform.js';
 
-// 全局 canvas（抖音小游戏会自动创建，无需设置尺寸）
-export const canvas = tt.createCanvas();
+// 全局 canvas（微信小游戏会自动创建，无需设置尺寸）
+export const canvas = wx.createCanvas();
 
 // 离屏 canvas，用于文字测量和绘制
-const offscreenCanvas = tt.createCanvas();
+const offscreenCanvas = wx.createCanvas();
 const ctx = offscreenCanvas.getContext('2d', {
     willReadFrequently: true
 });
@@ -25,13 +25,13 @@ let currentOnBlur = null;
  * @param {Function} handlePointer - 事件处理函数
  */
 function bindEvents(handlePointer) {
-    // 抖音小游戏使用 touch 事件，需要转换为 pointer 事件格式
-    tt.onTouchStart(handlePointer('onPointerDown'));
-    tt.onTouchMove(handlePointer('onPointerMove'));
-    tt.onTouchEnd(handlePointer('onPointerUp'));
-    tt.onTouchCancel(handlePointer('onPointerCancel'));
+    // 微信小游戏使用 touch 事件，需要转换为 pointer 事件格式
+    wx.onTouchStart(handlePointer('onPointerDown'));
+    wx.onTouchMove(handlePointer('onPointerMove'));
+    wx.onTouchEnd(handlePointer('onPointerUp'));
+    wx.onTouchCancel(handlePointer('onPointerCancel'));
 
-    tt.onKeyboardConfirm((res) => {
+    wx.onKeyboardConfirm((res) => {
         if (currentOnInput) {
             currentOnInput(res.value);
         }
@@ -45,7 +45,7 @@ function bindEvents(handlePointer) {
  */
 function createImage(src) {
     return new Promise((resolve, reject) => {
-        const img = tt.createImage();
+        const img = wx.createImage();
         img.onload = () => {
             resolve(img);
         };
@@ -157,7 +157,7 @@ function showKeyboard(options = {}) {
     currentOnInput = onInput;
     currentOnBlur = onBlur;
 
-    tt.showKeyboard({
+    wx.showKeyboard({
         defaultValue,
         maxLength,
         multiple,
@@ -170,7 +170,7 @@ function showKeyboard(options = {}) {
  * 隐藏键盘
  */
 function hideKeyboard() {
-    tt.hideKeyboard();
+    wx.hideKeyboard();
     currentOnInput = null;
     if (currentOnBlur) {
         currentOnBlur();
@@ -183,7 +183,14 @@ platform.default = {
     createImage,
     createTextImage,
     hideKeyboard,
-    loadYoga,
+    loadYoga: function () {
+        globalThis.WebAssembly = Object.assign({}, WXWebAssembly, {
+            instantiate: function (bytes, importObject) {
+                return WXWebAssembly.instantiate(require('./yoga.wasm'), importObject);
+            }
+        });
+        return loadYoga();
+    },
     measureText,
     showKeyboard
 };

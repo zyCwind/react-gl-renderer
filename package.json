@@ -1,6 +1,6 @@
 {
   "name": "react-gl-renderer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A custom React renderer using WebGL to render UI components with CSS-style styling",
   "main": "./dist/index.js",
   "types": "./index.d.ts",
@@ -16,12 +16,14 @@
     "./platform.microgame.douyin.js": {
       "import": "./dist/platform.microgame.douyin.js",
       "types": "./dist/platform.microgame.douyin.d.ts"
+    },
+    "./platform.microgame.weixin.js": {
+      "import": "./dist/platform.microgame.weixin.js",
+      "types": "./dist/platform.microgame.weixin.d.ts"
     }
   },
   "files": [
-    "dist",
-    "index.d.ts",
-    "platform.web.d.ts"
+    "dist"
   ],
   "scripts": {
     "build": "babel src --out-dir dist --copy-files",

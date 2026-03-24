@@ -27,10 +27,30 @@ npm install react-gl-renderer
 
 ## 快速开始
 
+### 支持平台
+
+渲染器支持以下平台：
+
+- **浏览器** - `react-gl-renderer/platform.web.js`
+- **抖音小游戏** - `react-gl-renderer/platform.microgame.douyin.js`
+- **微信小游戏** - `react-gl-renderer/platform.microgame.weixin.js`
+
+**重要**：平台包必须**先于**主包导入，以确保平台相关的初始化在渲染器加载前完成。
+
 ```tsx
+// 先导入平台包
+import { canvas } from 'react-gl-renderer/platform.web.js';
+
+import { createRoot, GLRenderer, View, Text } from 'react-gl-renderer';
+```
+
+### 基础示例
+
+```tsx
+import { canvas } from 'react-gl-renderer/platform.web.js';
+
 import { StrictMode } from 'react';
 import { createRoot, GLRenderer, View, Text } from 'react-gl-renderer';
-import { canvas } from 'react-gl-renderer/platform.web.js';
 
 const reactRenderer = new GLRenderer(canvas);
 
@@ -48,9 +68,10 @@ createRoot(reactRenderer).render(
 ## 与 Three.js 集成
 
 ```tsx
+import { canvas } from 'react-gl-renderer/platform.web.js';
+
 import { StrictMode } from 'react';
 import { createRoot, GLRenderer3D, View, Text } from 'react-gl-renderer';
-import { canvas } from 'react-gl-renderer/platform.web.js';
 import { WebGLRenderer } from 'three';
 
 const renderer = new WebGLRenderer({ canvas });
@@ -68,28 +89,6 @@ createRoot(reactRenderer).render(
 
 // 渲染结果存储在 reactRenderer.renderTarget 中
 // 可用于后处理或作为纹理贴到 3D 物体上
-```
-
-## 抖音小游戏平台
-
-渲染器支持抖音小游戏环境，使用方式与 Web 平台类似，只需导入不同的平台模块：
-
-```tsx
-import { StrictMode } from 'react';
-import { createRoot, GLRenderer, View, Text } from 'react-gl-renderer';
-import { canvas } from 'react-gl-renderer/platform.microgame.douyin.js';
-
-const reactRenderer = new GLRenderer(canvas);
-
-createRoot(reactRenderer).render(
-  <StrictMode>
-    <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
-      <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
-        Hello World
-      </Text>
-    </View>
-  </StrictMode>
-);
 ```
 
 ## 核心组件
@@ -241,9 +240,7 @@ react-gl-renderer 的架构设计为未来的扩展提供了坚实的基础：
 
 由于底层使用标准 GL 接口，理论上可以在任何支持 OpenGL 的平台上运行：
 
-- **Web 浏览器** - 当前首先支持的平台，通过 WebGL
 - **Node 桌面应用** - 通过 node-3d 实现原生窗口
-- **小游戏环境** - 轻量级渲染管线，无 DOM 依赖，可与游戏渲染循环集成
 - **移动端** - 通过 OpenGL ES
 
 ### React 全量放进 Worker

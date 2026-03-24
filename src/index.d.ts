@@ -208,16 +208,15 @@ export interface TextStyle extends ViewStyle {
 }
 
 export interface PointerEvent {
-    nativeEvent: globalThis.PointerEvent;
-    offsetX: number;
-    offsetY: number;
-    pointerId: number;
+    clientX: number;
+    clientY: number;
+    identifier: number;
     target: unknown;
     currentTarget: unknown;
     isPropagationStopped: boolean;
     stopPropagation(): void;
-    setPointerCapture(pointerId: number): void;
-    releasePointerCapture(pointerId: number): void;
+    setPointerCapture(identifier: number): void;
+    releasePointerCapture(identifier: number): void;
 }
 
 /** 布局信息 */

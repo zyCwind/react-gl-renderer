@@ -4,8 +4,10 @@
  * Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
  */
 
-import Yoga from 'yoga-layout';
+import { platform } from './platform.js';
 import { measureText } from './text.js';
+
+const Yoga = await platform.default.loadYoga();
 
 // Yoga 的行为：
 //  1. 输入时可以设置 box-sizing：content-box 或 border-box

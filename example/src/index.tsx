@@ -1,9 +1,10 @@
 // Copyright (c) 2026 391321232@qq.com
 // Licensed under BSL-1.1 (see LICENSE). Changes to MIT after 2099-12-31.
 
+import { canvas } from 'react-gl-renderer/platform.web.js';
+
 import { StrictMode, useRef, useState } from 'react';
 import { createRoot, GLRenderer3D, PointerEvent, Text, TextInput, View } from 'react-gl-renderer';
-import { canvas } from 'react-gl-renderer/platform.web.js';
 import { BoxGeometry, DoubleSide, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js';
 
@@ -33,10 +34,10 @@ function Draggable() {
                 borderColor: [0.5, 1.0, 0.0, 1.0]
             }}
             onPointerDown={(e: PointerEvent) => {
-                e.setPointerCapture(e.pointerId);
+                e.setPointerCapture(e.identifier);
                 dragRef.current = {
-                    startX: e.offsetX,
-                    startY: e.offsetY,
+                    startX: e.clientX,
+                    startY: e.clientY,
                     startLeft: left,
                     startTop: top,
                     dragging: true
@@ -44,8 +45,8 @@ function Draggable() {
             }}
             onPointerMove={(e: PointerEvent) => {
                 if (!dragRef.current.dragging) return;
-                const dx = e.offsetX - dragRef.current.startX;
-                const dy = e.offsetY - dragRef.current.startY;
+                const dx = e.clientX - dragRef.current.startX;
+                const dy = e.clientY - dragRef.current.startY;
                 setLeft(dragRef.current.startLeft + dx);
                 setTop(dragRef.current.startTop + dy);
             }}
