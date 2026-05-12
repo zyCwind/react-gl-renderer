@@ -186,7 +186,7 @@ platform.default = {
     loadYoga: function () {
         globalThis.WebAssembly = Object.assign({}, WXWebAssembly, {
             instantiate: function (bytes, importObject) {
-                return WXWebAssembly.instantiate(require('./yoga.wasm'), importObject);
+                return WXWebAssembly.instantiate('./yoga.wasm', importObject);
             }
         });
         return loadYoga();

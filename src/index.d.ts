@@ -5,6 +5,7 @@
  */
 
 import { ReactNode } from 'react';
+import { Fiber } from 'react-reconciler';
 import { WebGLRenderer, WebGLRenderTarget } from 'three';
 
 /** RGBA 颜色，取值范围 [0, 1] */
@@ -262,9 +263,22 @@ export function View(props: ViewProps): JSX.Element;
 export function Text(props: TextProps): JSX.Element;
 export function TextInput(props: TextInputProps): JSX.Element;
 
+export interface Node {
+    children: Node[];
+    fiber: Fiber;
+    x: number;
+    y: number;
+    yogaNode: {
+        getComputedLayout(): Layout;
+    };
+}
+
 export interface Root {
+    container: {
+        rootNode: Node | null;
+        renderer: Renderer;
+    };
     render(element: ReactNode): void;
-    handlePointer(name: string): (event: globalThis.PointerEvent) => void;
 }
 
 /** 圆角矩形渲染数据 */
@@ -343,7 +357,7 @@ export declare class GLRenderer3D implements Renderer {
     render(options: RenderBatch): void;
 }
 
-export function createRoot(renderer: Renderer): Root;
+export function createRoot(renderer: Renderer): Promise<Root>;
 
 /** 帧回调函数类型 */
 export type FrameCallback = (time: number) => void;

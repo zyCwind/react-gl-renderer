@@ -54,15 +54,17 @@ import { createRoot, GLRenderer, View, Text } from 'react-gl-renderer';
 
 const reactRenderer = new GLRenderer(canvas);
 
-createRoot(reactRenderer).render(
-  <StrictMode>
-    <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
-      <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
-        Hello World
-      </Text>
-    </View>
-  </StrictMode>
-);
+createRoot(reactRenderer).then(({ render }) => {
+  render(
+    <StrictMode>
+      <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
+        <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
+          Hello World
+        </Text>
+      </View>
+    </StrictMode>
+  );
+});
 ```
 
 ## 与 Three.js 集成
@@ -77,15 +79,17 @@ import { WebGLRenderer } from 'three';
 const renderer = new WebGLRenderer({ canvas });
 const reactRenderer = new GLRenderer3D(renderer);
 
-createRoot(reactRenderer).render(
-  <StrictMode>
-    <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
-      <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
-        Hello World
-      </Text>
-    </View>
-  </StrictMode>
-);
+createRoot(reactRenderer).then(({ render }) => {
+  render(
+    <StrictMode>
+      <View style={{ width: 100, height: 100, backgroundColor: [1, 0, 0, 1] }}>
+        <Text style={{ fontSize: 16, color: [0, 0, 0, 1] }}>
+          Hello World
+        </Text>
+      </View>
+    </StrictMode>
+  );
+});
 
 // 渲染结果存储在 reactRenderer.renderTarget 中
 // 可用于后处理或作为纹理贴到 3D 物体上

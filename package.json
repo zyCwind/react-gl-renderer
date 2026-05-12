@@ -1,6 +1,6 @@
 {
   "name": "react-gl-renderer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A custom React renderer using WebGL to render UI components with CSS-style styling",
   "main": "./dist/index.js",
   "types": "./index.d.ts",

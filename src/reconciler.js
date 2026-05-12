@@ -628,7 +628,9 @@ reconciler.injectIntoDevTools({
     rendererPackageName: 'react-gl-renderer'
 });
 
-export function createRoot(renderer) {
+export async function createRoot(renderer) {
+    await Node.loadYoga();
+
     const container = {
         rootNode: null,
         renderer
@@ -649,6 +651,7 @@ export function createRoot(renderer) {
     );
 
     return {
+        container,
         render(element) {
             reconciler.updateContainer(element, fiberRoot, null, null);
         }

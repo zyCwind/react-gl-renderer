@@ -164,158 +164,160 @@ function animate() {
 
 animate();
 
-createRoot(reactRenderer).render(
-    <StrictMode>
-        <View
-            style={{
-                flexDirection: 'column'
-            }}
-        >
+createRoot(reactRenderer).then(({ render }) => {
+    render(
+        <StrictMode>
             <View
                 style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    alignItems: 'flex-start',
-                    paddingTop: 20,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingBottom: 20
+                    flexDirection: 'column'
                 }}
             >
                 <View
                     style={{
-                        width: 80,
-                        height: 80,
-                        borderTopLeftRadius: [10, 10],
-                        borderTopRightRadius: [10, 10],
-                        borderBottomRightRadius: [10, 10],
-                        borderBottomLeftRadius: [10, 10],
-                        backgroundColor: [1.0, 0.0, 0.0, 1.0],
-                        backgroundImage: './star.png',
-                        backgroundSize: [0.5, 0.5],
-                        backgroundRepeatX: 'repeat',
-                        backgroundRepeatY: 'repeat',
-                        borderTopWidth: 2,
-                        borderRightWidth: 2,
-                        borderBottomWidth: 2,
-                        borderLeftWidth: 2,
-                        borderColor: [0.5, 0.0, 0.0, 1.0]
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        alignItems: 'flex-start',
+                        paddingTop: 20,
+                        paddingLeft: 20,
+                        paddingRight: 20,
+                        paddingBottom: 20
                     }}
-                    onPointerDown={(e: PointerEvent) => console.log('red box pointer down', e)}
-                />
-                <View
-                    style={{
-                        width: 120,
-                        height: 120,
-                        borderTopLeftRadius: [15, 15],
-                        borderTopRightRadius: [15, 15],
-                        borderBottomRightRadius: [15, 15],
-                        borderBottomLeftRadius: [15, 15],
-                        backgroundColor: [0.0, 0.0, 1.0, 1.0],
-                        borderTopWidth: 3,
-                        borderRightWidth: 3,
-                        borderBottomWidth: 3,
-                        borderLeftWidth: 3,
-                        borderColor: [0.0, 0.0, 0.5, 1.0],
-                        paddingTop: 10,
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingBottom: 10,
-                        flexDirection: 'column',
-                        justifyContent: 'flex-end',
-                        alignItems: 'flex-end'
-                    }}
-                    onPointerDown={(e: PointerEvent) => console.log('blue box pointer down', e)}
                 >
                     <View
                         style={{
-                            width: 50,
-                            height: 50,
-                            borderTopLeftRadius: [8, 8],
-                            borderTopRightRadius: [8, 8],
-                            borderBottomRightRadius: [8, 8],
-                            borderBottomLeftRadius: [8, 8],
-                            backgroundColor: [1.0, 1.0, 0.0, 1.0],
+                            width: 80,
+                            height: 80,
+                            borderTopLeftRadius: [10, 10],
+                            borderTopRightRadius: [10, 10],
+                            borderBottomRightRadius: [10, 10],
+                            borderBottomLeftRadius: [10, 10],
+                            backgroundColor: [1.0, 0.0, 0.0, 1.0],
+                            backgroundImage: './star.png',
+                            backgroundSize: [0.5, 0.5],
+                            backgroundRepeatX: 'repeat',
+                            backgroundRepeatY: 'repeat',
                             borderTopWidth: 2,
                             borderRightWidth: 2,
                             borderBottomWidth: 2,
                             borderLeftWidth: 2,
-                            borderColor: [0.7, 0.6, 0.0, 1.0]
+                            borderColor: [0.5, 0.0, 0.0, 1.0]
                         }}
-                        onPointerDown={(e: PointerEvent) => {
-                            console.log('yellow box pointer down', e);
-                            e.stopPropagation();
-                        }}
+                        onPointerDown={(e: PointerEvent) => console.log('red box pointer down', e)}
                     />
-                </View>
-                <View
-                    style={{
-                        width: 80,
-                        height: 80,
-                        borderTopLeftRadius: [10, 10],
-                        borderTopRightRadius: [10, 10],
-                        borderBottomRightRadius: [10, 10],
-                        borderBottomLeftRadius: [10, 10],
-                        backgroundColor: [0.0, 1.0, 0.0, 1.0],
-                        borderTopWidth: 2,
-                        borderRightWidth: 2,
-                        borderBottomWidth: 2,
-                        borderLeftWidth: 2,
-                        borderColor: [0.0, 0.5, 0.0, 1.0]
-                    }}
-                    onPointerDown={(e: PointerEvent) => console.log('green box pointer down', e)}
-                />
-                <View
-                    style={{
-                        width: 150,
-                        height: 80,
-                        borderTopLeftRadius: [10, 10],
-                        borderTopRightRadius: [10, 10],
-                        borderBottomRightRadius: [10, 10],
-                        borderBottomLeftRadius: [10, 10],
-                        backgroundColor: [1, 1, 1, 1.0],
-                        paddingTop: 10,
-                        paddingLeft: 10,
-                        paddingRight: 10,
-                        paddingBottom: 10,
-                        overflow: 'hidden'
-                    }}
-                >
-                    <Text
+                    <View
                         style={{
-                            fontSize: 16,
-                            fontFamily: 'sans-serif',
-                            fontWeight: 'normal',
-                            lineHeight: 1.5,
-                            color: [0.0, 0.0, 0.0, 1.0],
-                            wordBreak: 'keep-all'
+                            width: 120,
+                            height: 120,
+                            borderTopLeftRadius: [15, 15],
+                            borderTopRightRadius: [15, 15],
+                            borderBottomRightRadius: [15, 15],
+                            borderBottomLeftRadius: [15, 15],
+                            backgroundColor: [0.0, 0.0, 1.0, 1.0],
+                            borderTopWidth: 3,
+                            borderRightWidth: 3,
+                            borderBottomWidth: 3,
+                            borderLeftWidth: 3,
+                            borderColor: [0.0, 0.0, 0.5, 1.0],
+                            paddingTop: 10,
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            paddingBottom: 10,
+                            flexDirection: 'column',
+                            justifyContent: 'flex-end',
+                            alignItems: 'flex-end'
+                        }}
+                        onPointerDown={(e: PointerEvent) => console.log('blue box pointer down', e)}
+                    >
+                        <View
+                            style={{
+                                width: 50,
+                                height: 50,
+                                borderTopLeftRadius: [8, 8],
+                                borderTopRightRadius: [8, 8],
+                                borderBottomRightRadius: [8, 8],
+                                borderBottomLeftRadius: [8, 8],
+                                backgroundColor: [1.0, 1.0, 0.0, 1.0],
+                                borderTopWidth: 2,
+                                borderRightWidth: 2,
+                                borderBottomWidth: 2,
+                                borderLeftWidth: 2,
+                                borderColor: [0.7, 0.6, 0.0, 1.0]
+                            }}
+                            onPointerDown={(e: PointerEvent) => {
+                                console.log('yellow box pointer down', e);
+                                e.stopPropagation();
+                            }}
+                        />
+                    </View>
+                    <View
+                        style={{
+                            width: 80,
+                            height: 80,
+                            borderTopLeftRadius: [10, 10],
+                            borderTopRightRadius: [10, 10],
+                            borderBottomRightRadius: [10, 10],
+                            borderBottomLeftRadius: [10, 10],
+                            backgroundColor: [0.0, 1.0, 0.0, 1.0],
+                            borderTopWidth: 2,
+                            borderRightWidth: 2,
+                            borderBottomWidth: 2,
+                            borderLeftWidth: 2,
+                            borderColor: [0.0, 0.5, 0.0, 1.0]
+                        }}
+                        onPointerDown={(e: PointerEvent) => console.log('green box pointer down', e)}
+                    />
+                    <View
+                        style={{
+                            width: 150,
+                            height: 80,
+                            borderTopLeftRadius: [10, 10],
+                            borderTopRightRadius: [10, 10],
+                            borderBottomRightRadius: [10, 10],
+                            borderBottomLeftRadius: [10, 10],
+                            backgroundColor: [1, 1, 1, 1.0],
+                            paddingTop: 10,
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            paddingBottom: 10,
+                            overflow: 'hidden'
                         }}
                     >
-                        Hello World 你好世界
-                    </Text>
+                        <Text
+                            style={{
+                                fontSize: 16,
+                                fontFamily: 'sans-serif',
+                                fontWeight: 'normal',
+                                lineHeight: 1.5,
+                                color: [0.0, 0.0, 0.0, 1.0],
+                                wordBreak: 'keep-all'
+                            }}
+                        >
+                            Hello World 你好世界
+                        </Text>
+                    </View>
                 </View>
+                <UserInput />
+                <Draggable />
+                <View
+                    style={{
+                        width: 120,
+                        height: 80,
+                        borderTopWidth: 10,
+                        borderRightWidth: 20,
+                        borderBottomWidth: 10,
+                        borderLeftWidth: 10,
+                        borderTopLeftRadius: [10, 10],
+                        borderTopRightRadius: [20, 20],
+                        borderBottomRightRadius: [10, 10],
+                        borderBottomLeftRadius: [20, 20],
+                        borderColor: [1.0, 1.0, 1.0, 1.0],
+                        backgroundColor: [1, 0, 0, 1],
+                        backgroundImage: './r.9.png',
+                        background9Patch: [20, 120, 20, 60],
+                        marginTop: 20,
+                    }}
+                />
             </View>
-            <UserInput />
-            <Draggable />
-            <View
-                style={{
-                    width: 120,
-                    height: 80,
-                    borderTopWidth: 10,
-                    borderRightWidth: 20,
-                    borderBottomWidth: 10,
-                    borderLeftWidth: 10,
-                    borderTopLeftRadius: [10, 10],
-                    borderTopRightRadius: [20, 20],
-                    borderBottomRightRadius: [10, 10],
-                    borderBottomLeftRadius: [20, 20],
-                    borderColor: [1.0, 1.0, 1.0, 1.0],
-                    backgroundColor: [1, 0, 0, 1],
-                    backgroundImage: './r.9.png',
-                    background9Patch: [20, 120, 20, 60],
-                    marginTop: 20,
-                }}
-            />
-        </View>
-    </StrictMode>
-);
+        </StrictMode>
+    )
+});

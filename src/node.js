@@ -7,7 +7,7 @@
 import { platform } from './platform.js';
 import { measureText } from './text.js';
 
-const Yoga = await platform.default.loadYoga();
+let Yoga = null;
 
 // Yoga 的行为：
 //  1. 输入时可以设置 box-sizing：content-box 或 border-box
@@ -365,6 +365,10 @@ export class Node {
 
         // ===== width =====
         this.yogaNode.setWidth(this.width);
+    }
+
+    static async loadYoga() {
+        Yoga = await platform.default.loadYoga();
     }
 }
 
